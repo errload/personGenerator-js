@@ -100,8 +100,6 @@ const personGenerator = {
     GENDER_FEMALE: 'Женщина',
 
     randomIntNumber: (max = 1, min = 0) => Math.floor(Math.random() * (max - min + 1) + min),
-    // рандом пола (1 = true = мужской, 0 = false = женский)
-    randomGender: Math.floor(Math.random() * 2),
 
     // рандом объекта с данными (фамилия, имя, отчество)
     randomValue: function (json) {
@@ -114,7 +112,7 @@ const personGenerator = {
     randomDate: function() {
         let randomDay = this.randomIntNumber(31, 1);
         let randomMonth = this.randomIntNumber(11, 0);
-        let randomYear = this.randomIntNumber(2002, 1930);
+        let randomYear = this.randomIntNumber(2002, 1960);
         
         let month = [
             'января',
@@ -143,21 +141,21 @@ const personGenerator = {
     // если randomGender = true, берем фамилию, иначе фамилию с окончанием 'а'
     randomSurname: function() {
         let surname = this.randomValue(this.surnameJson);
-        return this.randomGender ? surname : surname + 'а';
+        return this.person.randomGender ? surname : surname + 'а';
     },
 
     // если randomGender = true, берем мужское имя, иначе женское
     randomFirstName: function() {
         let nameMale = this.randomValue(this.firstNameMaleJson);
         let nameFemale = this.randomValue(this.firstNameFemaleJson);
-        return this.randomGender ? nameMale : nameFemale;
+        return this.person.randomGender ? nameMale : nameFemale;
     },
 
     // если randomGender = true, берем отчество, иначе обрезаем на 2 символа
     //  и добавляем 'на' для женских имен
     randomLastName: function() {
         let lastName = this.randomValue(this.lastNameJson);
-        if (this.randomGender) return lastName;
+        if (this.person.randomGender) return lastName;
         else {
             lastName = lastName.slice(0, lastName.length - 2);
             return lastName + 'на';
@@ -168,12 +166,15 @@ const personGenerator = {
     randomProfession: function() {
         let professionMaleJson = this.randomValue(this.professionMaleJson);
         let professionFemaleJson = this.randomValue(this.professionFemaleJson);
-        return this.randomGender ? professionMaleJson : professionFemaleJson;
+        return this.person.randomGender ? professionMaleJson : professionFemaleJson;
     },
 
     getPerson: function () {
         this.person = {};
-        this.person.gender = this.randomGender ? this.GENDER_MALE : this.GENDER_FEMALE; // пол
+        // рандом пола (1 = true = мужской, 0 = false = женский)
+        this.person.randomGender = Math.floor(Math.random() * 2),
+
+        this.person.gender = this.person.randomGender ? this.GENDER_MALE : this.GENDER_FEMALE; // пол
         this.person.surname = this.randomSurname(); // фамилия
         this.person.firstName = this.randomFirstName(); // имя
         this.person.lastName = this.randomLastName(); // отчество
